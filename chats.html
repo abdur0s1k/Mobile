@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Чаты - ArtSpace</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1200px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: 700px;
+      position: relative;
+    }
+
+    /* Боковая панель */
+    .sidebar {
+      background: linear-gradient(180deg, #43a047 0%, #2e7d32 100%);
+      color: white;
+      padding: 40px 25px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateX(5px);
+    }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.2);
+      border-left: 4px solid #ff7043;
+    }
+
+    .nav-item i {
+      font-size: 20px;
+      width: 24px;
+    }
+
+    /* Основной контент */
+    .main-content {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      overflow-y: auto;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      color: #2e7d32;
+      font-weight: 700;
+    }
+
+    /* Поиск */
+    .search-bar {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 15px 20px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: 1px solid #e0e0e0;
+      background-color: #f8f9fa;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      border-color: #43a047;
+      box-shadow: 0 0 0 3px rgba(67, 160, 71, 0.1);
+    }
+
+    /* Список чатов */
+    .chats-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chat-section {
+      margin-bottom: 25px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #2e7d32;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .chat-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 18px;
+      background: #f8f9fa;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+      margin-bottom: 8px;
+    }
+
+    .chat-item:hover {
+      background: #e9ecef;
+      transform: translateX(5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .chat-item.active {
+      background: linear-gradient(135deg, #43a047, #66bb6a);
+      color: white;
+    }
+
+    .chat-item.active .chat-name,
+    .chat-item.active .chat-last-message,
+    .chat-item.active .chat-source {
+      color: white;
+    }
+
+    .chat-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .chat-item.active .chat-avatar {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .chat-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .chat-last-message {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.4;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-source {
+      font-size: 12px;
+      color: #999;
+      font-style: italic;
+    }
+
+    .chat-time {
+      font-size: 12px;
+      color: #999;
+      align-self: flex-start;
+    }
+
+    .chat-item.active .chat-time {
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* Статус онлайн */
+    .online-status {
+      width: 12px;
+      height: 12px;
+      background: #4caf50;
+      border-radius: 50%;
+      border: 2px solid white;
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+    }
+
+    .chat-avatar-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Нижняя панель навигации */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: white;
+      border-top: 1px solid #ccc;
+      padding: 20px 0;
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+      margin-top: auto;
+    }
+
+    .bottom-nav i {
+      font-size: 22px;
+      color: #616161;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    .bottom-nav i:hover {
+      color: #43a047;
+    }
+
+    /* Мобильная версия */
+    @media (max-width: 768px) {
+      body {
+        padding: 0;
+        background: #e8f5e9;
+        display: block;
+        min-height: 100vh;
+      }
+
+      .app-container {
+        grid-template-columns: 1fr;
+        border-radius: 0;
+        min-height: 100vh;
+        box-shadow: none;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .main-content {
+        padding: 20px;
+        padding-bottom: 80px;
+      }
+
+      .page-title {
+        font-size: 24px;
+      }
+
+      .chat-item {
+        padding: 15px;
+      }
+
+      .chat-avatar {
+        width: 45px;
+        height: 45px;
+        font-size: 16px;
+      }
+
+      /* Нижняя панель для мобильных */
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: white;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        padding: 15px 0;
+      }
+    }
+
+    /* Десктоп версия */
+    @media (min-width: 769px) {
+      .bottom-nav {
+        display: none;
+      }
+    }
+
+    /* Большие экраны */
+    @media (min-width: 1200px) {
+      .app-container {
+        width: 1000px;
+        height: 700px;
+      }
+
+      .main-content {
+        padding: 40px;
+      }
+    }
+
+    /* Анимации */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chat-item {
+      animation: fadeIn 0.6s ease forwards;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Боковая панель -->
+    <div class="sidebar">
+      <div class="logo">ArtSpace</div>
+      <div class="nav-menu">
+        <div class="nav-item" onclick="location.href='main.html'">
+         <i class="fa-solid fa-share-nodes" onclick="location.href='main.html'"></i>
+          <span>Главная</span>
+        </div>
+        <div class="nav-item"  onclick="location.href='mycurs.html'">
+          <i class="fa-solid fa-book-open"></i>
+          <span>Мои курсы</span>
+        </div>
+        <div class="nav-item" onclick="location.href='curs.html'">
+          <i class="fa-solid fa-graduation-cap" onclick="location.href='curs.html'"></i>
+          <span>Курсы</span></i>
+        </div>
+        <div class="nav-item" onclick="location.href='user.html'">
+          <i class="fa-solid fa-user" onclick="location.href='user.html'"></i>
+          <span>Аккаунт</span>
+        </div>
+        <div class="nav-item active">
+          <i class="fas fa-comments"></i>
+          <span>Чаты</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Чаты</h1>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" placeholder="Поиск в чатах...">
+      </div>
+
+      <div class="chats-container">
+        <!-- Основные чаты -->
+        <div class="chat-section">
+          <h2 class="section-title">Чаты</h2>
+          <div class="chat-item active">
+            <div class="chat-avatar-container">
+              <div class="chat-avatar">П</div>
+              <div class="online-status"></div>
+            </div>
+            <div class="chat-info">
+              <div class="chat-name">Песнь</div>
+              <div class="chat-last-message">Красивая графическая двойка</div>
+              <div class="chat-source">Источник: Что это делает в стране?</div>
+            </div>
+            <div class="chat-time">12:30</div>
+          </div>
+        </div>
+
+        <!-- Управление -->
+        <div class="chat-section">
+          <h2 class="section-title">Согласно Управлению</h2>
+          <div class="chat-item">
+            <div class="chat-avatar">ЦП</div>
+            <div class="chat-info">
+              <div class="chat-name">Центральная программа</div>
+              <div class="chat-last-message">Центральная программа развития</div>
+            </div>
+            <div class="chat-time">11:45</div>
+          </div>
+        </div>
+
+        <!-- Схемы -->
+        <div class="chat-section">
+          <h2 class="section-title">Схема Ассоциировки</h2>
+          <div class="chat-item">
+            <div class="chat-avatar">СА</div>
+            <div class="chat-info">
+              <div class="chat-name">Схема Ассоциировки</div>
+              <div class="chat-last-message">Мы будем работать на планете, чтобы выбрали новые модели, которые будут работать на планете.</div>
+            </div>
+            <div class="chat-time">10:20</div>
+          </div>
+        </div>
+
+        <!-- Дополнительные чаты -->
+        <div class="chat-section">
+          <h2 class="section-title">Групповые чаты</h2>
+          <div class="chat-item">
+            <div class="chat-avatar">К</div>
+            <div class="chat-info">
+              <div class="chat-name">Курсы</div>
+              <div class="chat-last-message">Обсуждение новых материалов</div>
+            </div>
+            <div class="chat-time">09:15</div>
+          </div>
+          <div class="chat-item">
+            <div class="chat-avatar">П2</div>
+            <div class="chat-info">
+              <div class="chat-name">Песнь 2</div>
+              <div class="chat-last-message">Творческие обсуждения</div>
+            </div>
+            <div class="chat-time">Вчера</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Нижняя панель навигации -->
+  <div class="bottom-nav">
+    <i class="fa-solid fa-share-nodes" onclick="location.href='main.html'"></i>
+    <i class="fa-solid fa-book-open"  onclick="location.href='mycurs.html'"></i>
+    <i class="fa-solid fa-graduation-cap" onclick="location.href='curs.html'"></i>
+    <i class="fa-solid fa-user" onclick="location.href='user.html'"></i>
+  </div>
+
+  <script>
+    // Добавляем интерактивность чатам
+    document.querySelectorAll('.chat-item').forEach(item => {
+      item.addEventListener('click', function() {
+        // Убираем активный класс у всех чатов
+        document.querySelectorAll('.chat-item').forEach(chat => {
+          chat.classList.remove('active');
+        });
+        // Добавляем активный класс текущему чату
+        this.classList.add('active');
+        
+        const chatName = this.querySelector('.chat-name').textContent;
+        console.log('Открыт чат:', chatName);
+      });
+    });
+
+    // Поиск в чатах
+    const searchInput = document.querySelector('.search-bar input');
+    searchInput.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      document.querySelectorAll('.chat-item').forEach(item => {
+        const chatName = item.querySelector('.chat-name').textContent.toLowerCase();
+        const chatMessage = item.querySelector('.chat-last-message').textContent.toLowerCase();
+        if (chatName.includes(searchTerm) || chatMessage.includes(searchTerm)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+
+    // Анимация появления элементов
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationDelay = '0.2s';
+        }
+      });
+    });
+
+    document.querySelectorAll('.chat-item').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Мои курсы - ArtSpace</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1200px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: 700px;
+      position: relative;
+    }
+
+    /* Боковая панель */
+    .sidebar {
+      background: linear-gradient(180deg, #43a047 0%, #2e7d32 100%);
+      color: white;
+      padding: 40px 25px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateX(5px);
+    }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.2);
+      border-left: 4px solid #ff7043;
+    }
+
+    .nav-item i {
+      font-size: 20px;
+      width: 24px;
+    }
+
+    /* Основной контент */
+    .main-content {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      overflow-y: auto;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      color: #2e7d32;
+      font-weight: 700;
+    }
+
+    /* Список чатов */
+    .chats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .chat-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+    }
+
+    .chat-item:hover {
+      background: #e9ecef;
+      transform: translateX(5px);
+    }
+
+    .chat-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #43a047, #66bb6a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .chat-info {
+      flex: 1;
+    }
+
+    .chat-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .chat-last-message {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .chat-time {
+      font-size: 12px;
+      color: #999;
+    }
+
+    /* Карточки курсов */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+
+    .course-card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      border: 1px solid #e0e0e0;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .course-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+
+    .course-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #43a047, #66bb6a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .course-card h3 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .course-card p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    /* Секции */
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #2e7d32;
+      margin-bottom: 20px;
+    }
+
+    .subsection-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    /* Список друзей */
+    .friends-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .friend-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .friend-item:hover {
+      background: #e9ecef;
+    }
+
+    .friend-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .friend-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    /* Избранное */
+    .favorites-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      background: #f8f9fa;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      background: #43a047;
+      color: white;
+    }
+
+    /* Нижняя панель навигации */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: white;
+      border-top: 1px solid #ccc;
+      padding: 20px 0;
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+      margin-top: auto;
+    }
+
+    .bottom-nav i {
+      font-size: 22px;
+      color: #616161;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    .bottom-nav i:hover {
+      color: #43a047;
+    }
+
+    /* Мобильная версия */
+    @media (max-width: 768px) {
+      body {
+        padding: 0;
+        background: #e8f5e9;
+        display: block;
+        min-height: 100vh;
+      }
+
+      .app-container {
+        grid-template-columns: 1fr;
+        border-radius: 0;
+        min-height: 100vh;
+        box-shadow: none;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .main-content {
+        padding: 20px;
+        padding-bottom: 80px;
+      }
+
+      .page-title {
+        font-size: 24px;
+      }
+
+      .courses-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .course-card {
+        padding: 20px;
+      }
+
+      .friends-list {
+        grid-template-columns: 1fr;
+      }
+
+      /* Нижняя панель для мобильных */
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: white;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        padding: 15px 0;
+      }
+    }
+
+    /* Десктоп версия */
+    @media (min-width: 769px) {
+      .bottom-nav {
+        display: none;
+      }
+    }
+
+    /* Большие экраны */
+    @media (min-width: 1200px) {
+      .app-container {
+        width: 1000px;
+        height: 700px;
+      }
+
+      .main-content {
+        padding: 40px;
+      }
+    }
+
+    /* Анимации */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chat-item, .course-card, .friend-item {
+      animation: fadeIn 0.6s ease forwards;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="sidebar">
+      <div class="logo">ArtSpace</div>
+      <div class="nav-menu">
+        <div class="nav-item " onclick="location.href='main.html'">
+         <i class="fa-solid fa-share-nodes" onclick="location.href='main.html'"></i>
+          <span>Главная</span>
+        </div>
+        <div class="nav-item active">
+          <i class="fa-solid fa-book-open" onclick="location.href='mycurs.html'"></i>
+          <span>Мои курсы</span>
+        </div>
+        <div class="nav-item" onclick="location.href='curs.html'">
+          <i class="fa-solid fa-graduation-cap" onclick="location.href='curs.html'"></i>
+          <span>Курсы</span></i>
+        </div>
+        <div class="nav-item" onclick="location.href='user.html'">
+          <i class="fa-solid fa-user" onclick="location.href='user.html'"></i>
+          <span>Аккаунт</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Мои курсы</h1>
+      </div>
+
+      <div class="section">
+        <h2 class="subsection-title">Мои курсы</h2>
+        <div class="courses-grid">
+          <div class="course-card">
+          <div class="course-icon">
+            <i class="fas fa-pencil-alt"></i>
+          </div>
+            <h3>Рисование карандашом</h3>
+          <p>Рисование карандашом — это навык, который служит основой для многих форм искусства.</p>
+           </div>
+
+          <div class="course-card">
+           <div class="course-icon">
+            <i class="fas fa-palette"></i>
+          </div>
+          <h3>Основы графического дизайна</h3>
+          <p>Изучение основ композиции, цветовой теории и типографии.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <i class="fa-solid fa-share-nodes" onclick="location.href='main.html'"></i>
+    <i class="fa-solid fa-book-open"  onclick="location.href='mycurs.html'"></i>
+    <i class="fa-solid fa-graduation-cap" onclick="location.href='curs.html'"></i>
+    <i class="fa-solid fa-user" onclick="location.href='user.html'"></i>
+  </div>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArtSpace</title>
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background-color: #1e1e1e;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    /* Общий контейнер */
+    .screen {
+        width: 320px;
+        min-height: 520px;
+        background: #fff;
+        border-radius: 6px;
+        padding: 30px;
+        display: none;
+        flex-direction: column;
+        justify-content: flex-start;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .screen.active {
+        display: flex;
+    }
+
+    /* ---------- Приветственная страница ---------- */
+    #home {
+        background: 
+            linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+            url('img/fon.png') center/cover no-repeat;
+        color: #fff;
+        align-items: center;
+        justify-content: center;
+        padding: 0 20px;
+        text-align: center;
+        position: relative;
+    }
+
+    #home::before {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: #ccc;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 200px;
+    }
+
+    .logo img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .logo h1 {
+        font-size: 28px;
+        margin-top: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px 0;
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        color: #fff;
+        cursor: pointer;
+        margin-top: 10px;
+        text-decoration: none;
+        text-align: center;
+        transition: 0.2s;
+    }
+
+    .btn.orange { background-color: #ff6c2d; }
+    .btn.green { background-color: #42b66e; }
+    .btn:hover { opacity: 0.9; }
+
+    /* ---------- Формы входа и регистрации ---------- */
+    #login::before, #register::before {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: #999;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    #login::before { content: "Вход"; }
+    #register::before { content: "Регистрация"; }
+
+    h2 {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 20px 0 10px;
+    }
+
+    .link-text {
+        font-size: 14px;
+        color: #777;
+        margin-bottom: 20px;
+    }
+
+    .link-text a {
+        color: #777;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 7px 0;
+        border-radius: 25px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .submit-btn {
+        margin-top: 10px;
+        width: 100%;
+        background-color: #42b66e;
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        padding: 12px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .submit-btn:hover { opacity: 0.9; }
+
+    .forgot {
+        margin-top: 5px;
+        font-size: 13px;
+        color: #777;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .small-text {
+        font-size: 13px;
+        color: #777;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    /* ---------- Анимация ---------- */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- Адаптивность ---------- */
+    @media (max-width: 600px) {
+        .screen {
+            width: 90%;
+            min-height: 90vh;
+        }
+        .logo h1 {
+            font-size: 32px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<!-- Главный экран -->
+<div class="screen active" id="home">
+    <div class="logo">
+        <img src="img/icon-removebg-preview.png" alt="ArtSpace">
+        <h1>ArtSpace</h1>
+    </div>
+    <a class="btn orange" onclick="showScreen('login')">Войти</a>
+    <a class="btn green" onclick="showScreen('register')">Регистрация</a>
+</div>
+
+<!-- Экран входа -->
+<div class="screen" id="login">
+    <h2>Добро пожаловать<br>в <b>ArtSpace</b></h2>
+    <div class="link-text">Впервые здесь? <a onclick="showScreen('register')">Зарегистрироваться</a></div>
+    <input type="text" placeholder="Телефон или почта">
+    <input type="password" placeholder="Пароль">
+    <div class="forgot">Я не помню пароль</div>
+    <button class="submit-btn" onclick="location.href='main.html'">Войти</button>
+    <div class="small-text">Войти по коду или через соцсети</div>
+</div>
+
+<!-- Экран регистрации -->
+<div class="screen" id="register">
+    <h2>Добро пожаловать<br>в <b>ArtSpace</b></h2>
+    <div class="link-text">Уже есть аккаунт? <a onclick="showScreen('login')">Войти</a></div>
+    <input type="text" placeholder="ФИО">
+    <input type="text" placeholder="Телефон">
+    <input type="email" placeholder="Почта">
+    <input type="password" placeholder="Пароль">
+    <input type="password" placeholder="Повторите пароль">
+    <button class="submit-btn" onclick="location.href='main.html'">Регистрация</button>
+</div>
+
+<script>
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+}
+</script>
+
+</body>
+</html>

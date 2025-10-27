@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArtSpace — Главная</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1200px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: 700px;
+    }
+
+    /* Боковая панель */
+    .sidebar {
+      background: linear-gradient(180deg, #43a047 0%, #2e7d32 100%);
+      color: white;
+      padding: 40px 25px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateX(5px);
+    }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.2);
+      border-left: 4px solid #ff7043;
+    }
+
+    .nav-item i {
+      font-size: 20px;
+      width: 24px;
+    }
+
+    /* Основной контент */
+    .main-content {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .welcome h1 {
+      font-size: 32px;
+      color: #2e7d32;
+      margin-bottom: 5px;
+    }
+
+    .welcome p {
+      color: #666;
+      font-size: 16px;
+    }
+
+    .user-profile {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff7043, #ffab40);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .user-profile:hover {
+      transform: scale(1.05);
+    }
+
+    /* Карточки курсов */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+
+    .course-card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      border: 1px solid #e0e0e0;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .course-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+
+    .course-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #43a047, #66bb6a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .course-card h3 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .course-card p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #43a047, #66bb6a);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: #666;
+      margin-top: 8px;
+      text-align: right;
+    }
+
+    /* Прогресс зигзаг */
+    .progress-section {
+      background: #f8f9fa;
+      border-radius: 16px;
+      padding: 30px;
+      margin-top: 20px;
+    }
+
+    .progress-title {
+      font-size: 24px;
+      color: #2e7d32;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .progress-path {
+      position: relative;
+      width: 100%;
+      max-width: 200px;
+      height: 400px;
+      margin: 0 auto;
+    }
+
+    .circle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #81c784;
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      z-index: 2;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .circle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .circle.active {
+      background: linear-gradient(135deg, #ff7043, #ffab40);
+      box-shadow: 0 5px 15px rgba(255, 112, 67, 0.4);
+    }
+
+    /* Мобильная версия */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+        background: #e8f5e9;
+      }
+
+      .app-container {
+        grid-template-columns: 1fr;
+        border-radius: 16px;
+        min-height: auto;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .welcome h1 {
+        font-size: 24px;
+      }
+
+      .courses-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .course-card {
+        padding: 20px;
+      }
+
+      .progress-path {
+        max-width: 160px;
+        height: 350px;
+      }
+
+      .circle {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+      }
+
+      /* Мобильное нижнее меню */
+      .bottom-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background: white;
+        border-top: 1px solid #e0e0e0;
+        padding: 15px 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+      }
+
+      .bottom-nav i {
+        font-size: 22px;
+        color: #616161;
+        transition: color 0.3s ease;
+      }
+
+      .bottom-nav i.active {
+        color: #43a047;
+      }
+    }
+
+    /* Анимации */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .course-card, .nav-item, .circle {
+      animation: fadeIn 0.6s ease forwards;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Боковая панель -->
+    <div class="sidebar">
+      <div class="logo">ArtSpace</div>
+      <div class="nav-menu">
+        <div class="nav-item active" onclick="location.href='main.html'">
+         <i class="fa-solid fa-share-nodes" onclick="location.href='main.html'"></i>
+          <span>Главная</span>
+        </div>
+        <div class="nav-item"  onclick="location.href='mycurs.html'">
+          <i class="fa-solid fa-book-open"></i>
+          <span>Мои курсы</span>
+        </div>
+        <div class="nav-item" onclick="location.href='curs.html'">
+          <i class="fa-solid fa-graduation-cap" onclick="location.href='curs.html'"></i>
+          <span>Курсы</span></i>
+        </div>
+        <div class="nav-item" onclick="location.href='user.html'">
+          <i class="fa-solid fa-user" onclick="location.href='user.html'"></i>
+          <span>Аккаунт</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="main-content">
+      <div class="header">
+        <div class="welcome">
+          <h1>Добро пожаловать!</h1>
+          <p>Продолжайте ваше обучение рисованию</p>
+        </div>
+        <div class="user-profile">
+          <i class="fas fa-user"></i>
+        </div>
+      </div>
+
+      <!-- Карточки курсов -->
+      <div class="courses-grid">
+        <div class="course-card">
+          <div class="course-icon">
+            <i class="fas fa-pencil-alt"></i>
+          </div>
+          <h3>Рисование карандашом</h3>
+          <p>Рисование карандашом — это навык, который служит основой для многих форм искусства.</p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 75%"></div>
+          </div>
+          <div class="progress-text">75% завершено</div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-icon">
+            <i class="fas fa-palette"></i>
+          </div>
+          <h3>Основы графического дизайна</h3>
+          <p>Изучение основ композиции, цветовой теории и типографии.</p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 30%"></div>
+          </div>
+          <div class="progress-text">30% завершено</div>
+        </div>
+
+      </div>
+
+      <!-- Прогресс зигзаг -->
+      <div class="progress-section">
+        <h2 class="progress-title">Ваш прогресс обучения</h2>
+        <div class="progress-path">
+          <svg style="position:absolute; top:0; left:0; width:100%; height:100%;">
+            <polyline 
+              points="30,30 130,100 30,170 130,240 30,310 130,380" 
+              stroke="#81c784" 
+              stroke-width="3" 
+              stroke-dasharray="6,4" 
+              fill="none" />
+          </svg>
+
+          <div class="circle active" style="top:0; left:0;">1</div>
+          <div class="circle" style="top:70px; left:100px;">2</div>
+          <div class="circle" style="top:140px; left:0;">3</div>
+          <div class="circle" style="top:210px; left:100px;">4</div>
+          <div class="circle" style="top:280px; left:0;">5</div>
+          <div class="circle" style="top:350px; left:100px;">6</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Мобильное меню -->
+  <div class="bottom-nav"style="display: none;">
+    <i class="fa-solid fa-share-nodes" onclick="location.href='main.html'"></i>
+    <i class="fa-solid fa-book-open"  onclick="location.href='mycurs.html'"></i>
+    <i class="fa-solid fa-graduation-cap" onclick="location.href='curs.html'"></i>
+    <i class="fa-solid fa-user" onclick="location.href='user.html'"></i>
+  </div>
+
+  <script>
+    // Показываем мобильное меню только на мобильных устройствах
+    if (window.innerWidth <= 768) {
+      document.querySelector('.bottom-nav').style.display = 'flex';
+      document.querySelector('.main-content').style.paddingBottom = '80px';
+    }
+
+    // Добавляем интерактивность кружкам
+    document.querySelectorAll('.circle').forEach(circle => {
+      circle.addEventListener('click', function() {
+        document.querySelectorAll('.circle').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Анимация появления элементов
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationDelay = '0.2s';
+        }
+      });
+    });
+
+    document.querySelectorAll('.course-card, .circle').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

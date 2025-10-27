@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Курсы</title>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1200px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: 700px;
+      position: relative;
+    }
+
+    /* Боковая панель */
+    .sidebar {
+      background: linear-gradient(180deg, #43a047 0%, #2e7d32 100%);
+      color: white;
+      padding: 40px 25px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateX(5px);
+    }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.2);
+      border-left: 4px solid #ff7043;
+    }
+
+    .nav-item i {
+      font-size: 20px;
+      width: 24px;
+    }
+
+    /* Основной контент */
+    .main-content {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .welcome h1 {
+      font-size: 32px;
+      color: #2e7d32;
+      margin-bottom: 5px;
+    }
+
+    .welcome p {
+      color: #666;
+      font-size: 16px;
+    }
+
+    .search-bar {
+      width: 100%;
+      margin: 20px 0;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 15px 20px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: 1px solid #e0e0e0;
+      background-color: #f8f9fa;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      border-color: #43a047;
+      box-shadow: 0 0 0 3px rgba(67, 160, 71, 0.1);
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #2e7d32;
+      margin: 20px 0;
+    }
+
+    /* Стили для свайпера */
+    .swiper-container {
+      position: relative;
+      padding: 0 0 40px;
+      width: 100%;
+    }
+
+    .swiper {
+      width: 100%;
+      height: 100%;
+    }
+
+    .swiper-slide {
+      background: linear-gradient(135deg, #43a047 0%, #66bb6a 100%);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: auto;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .swiper-slide:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .course-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+    }
+
+    .course-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .course-description {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 20px;
+      flex-grow: 1;
+      line-height: 1.5;
+    }
+
+    .course-tags {
+      font-size: 12px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      display: inline-block;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+      color: #333;
+      width: 40px;
+      height: 40px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .swiper-button-next:hover,
+    .swiper-button-prev:hover {
+      background-color: #43a047;
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .swiper-button-next:after,
+    .swiper-button-prev:after {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .swiper-pagination {
+      position: relative;
+      margin-top: 20px;
+    }
+
+    .swiper-pagination-bullet {
+      width: 8px;
+      height: 8px;
+      background: #ccc;
+      opacity: 1;
+    }
+
+    .swiper-pagination-bullet-active {
+      background-color: #43a047;
+      transform: scale(1.2);
+    }
+
+    /* Нижняя панель навигации */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: white;
+      border-top: 1px solid #ccc;
+      padding: 20px 0;
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+      margin-top: auto;
+    }
+
+    .bottom-nav i {
+      font-size: 22px;
+      color: #616161;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    .bottom-nav i:hover {
+      color: #43a047;
+    }
+
+    /* Мобильная версия */
+    @media (max-width: 768px) {
+      body {
+        padding: 0;
+        background: #e8f5e9;
+        display: block;
+        min-height: 100vh;
+      }
+
+      .app-container {
+        grid-template-columns: 1fr;
+        border-radius: 0;
+        min-height: 100vh;
+        box-shadow: none;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .main-content {
+        padding: 20px;
+        padding-bottom: 80px;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .welcome h1 {
+        font-size: 24px;
+      }
+
+      .section-title {
+        font-size: 22px;
+        text-align: center;
+      }
+
+      .swiper-slide {
+        padding: 20px;
+      }
+
+      .course-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+      }
+
+      .course-title {
+        font-size: 18px;
+      }
+
+      /* Нижняя панель для мобильных */
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: white;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        padding: 15px 0;
+      }
+    }
+
+    /* Десктоп версия */
+    @media (min-width: 769px) {
+      .bottom-nav {
+        display: none;
+      }
+
+      .swiper-container {
+        padding: 0 0 50px;
+      }
+    }
+
+    /* Большие экраны */
+    @media (min-width: 1200px) {
+      .app-container {
+        width: 1000px;
+        height: 700px;
+      }
+
+      .main-content {
+        padding: 40px;
+      }
+
+      .section-title {
+        font-size: 32px;
+      }
+    }
+
+    /* Анимации */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .swiper-slide {
+      animation: fadeIn 0.6s ease forwards;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Боковая панель -->
+    <div class="sidebar">
+      <div class="logo">ArtSpace</div>
+      <div class="nav-menu">
+        <div class="nav-item " onclick="location.href='main.html'">
+         <i class="fa-solid fa-share-nodes" onclick="location.href='main.html'"></i>
+          <span>Главная</span>
+        </div>
+        <div class="nav-item"  onclick="location.href='mycurs.html'">
+          <i class="fa-solid fa-book-open"></i>
+          <span>Мои курсы</span>
+        </div>
+        <div class="nav-item active" onclick="location.href='curs.html'">
+          <i class="fa-solid fa-graduation-cap" onclick="location.href='curs.html'"></i>
+          <span>Курсы</span></i>
+        </div>
+        <div class="nav-item" onclick="location.href='user.html'">
+          <i class="fa-solid fa-user" onclick="location.href='user.html'"></i>
+          <span>Аккаунт</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="main-content">
+      <div class="header">
+        <div class="welcome">
+          <h1>Наши курсы</h1>
+          <p>Выберите курс для начала обучения</p>
+        </div>
+      </div>
+
+      <!-- 🔍 Поисковая строка -->
+      <div class="search-bar">
+        <input type="text" placeholder="Поиск курсов..." />
+      </div>
+
+      <!-- 📚 Заголовок -->
+      <div class="section-title">Популярные курсы</div>
+
+      <!-- 🎓 Слайдер курсов -->
+      <div class="swiper-container">
+        <div class="swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="course-icon">
+                <i class="fas fa-palette"></i>
+              </div>
+              <div class="course-title">Основы графического дизайна</div>
+              <div class="course-description">Изучение основ композиции, цветовой теории и типографии.</div>
+              <div class="course-tags">#Дизайн #Web Design</div>
+            </div>
+            <div class="swiper-slide">
+              <div class="course-icon">
+                <i class="fas fa-pencil-alt"></i>
+              </div>
+              <div class="course-title">Рисование карандашом</div>
+              <div class="course-description">Рисование карандашом — это навык, который служит основой для многих форм искусства.</div>
+              <div class="course-tags">#Рисование #Базовый</div>
+            </div>
+            <div class="swiper-slide">
+              <div class="course-icon">
+                <i class="fas fa-user-md"></i>
+              </div>
+              <div class="course-title">Изучение анатомии человека</div>
+              <div class="course-description">Знание анатомии — это ключ к созданию реалистичных изображений человека.</div>
+              <div class="course-tags">#Анатомия #Продвинутый</div>
+            </div>
+            <div class="swiper-slide">
+              <div class="course-icon">
+                <i class="fas fa-laptop-code"></i>
+              </div>
+              <div class="course-title">UI/UX Дизайн</div>
+              <div class="course-description">В современном цифровом мире дизайн интерфейсов играет важную роль.</div>
+              <div class="course-tags">#UI/UX #Web Design</div>
+            </div>
+            <div class="swiper-slide">
+              <div class="course-icon">
+                <i class="fas fa-paint-brush"></i>
+              </div>
+              <div class="course-title">Рисование акварелью</div>
+              <div class="course-description">Акварель — это уникальная техника, которая позволяет создавать мягкие и прозрачные изображения.</div>
+              <div class="course-tags">#Акварель #Живопись</div>
+            </div>
+            <div class="swiper-slide">
+              <div class="course-icon">
+                <i class="fas fa-vector-square"></i>
+              </div>
+              <div class="course-title">Создание векторной иллюстрации</div>
+              <div class="course-description">Векторная графика — это мощный инструмент для создания четких и масштабируемых изображений.</div>
+              <div class="course-tags">#Вектор #Иллюстрация</div>
+            </div>
+          </div>
+          <!-- Добавляем пагинацию -->
+          <div class="swiper-pagination"></div>
+        </div>
+        <!-- Добавляем кнопки навигации -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Сохраняем вашу нижнюю панель -->
+  <div class="bottom-nav">
+    <i class="fa-solid fa-share-nodes" onclick="location.href='main.html'"></i>
+    <i class="fa-solid fa-book-open"  onclick="location.href='mycurs.html'"></i>
+    <i class="fa-solid fa-graduation-cap" onclick="location.href='curs.html'"></i>
+    <i class="fa-solid fa-user" onclick="location.href='user.html'"></i>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+  <script>
+    const swiper = new Swiper('.swiper', {
+      slidesPerView: 1.2,
+      spaceBetween: 20,
+      loop: false,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        768: {
+          slidesPerView: 2.2,
+          spaceBetween: 25,
+        },
+        1024: {
+          slidesPerView: 2.5,
+          spaceBetween: 30,
+        },
+      },
+    });
+
+    // Добавляем интерактивность карточкам курсов
+    document.querySelectorAll('.swiper-slide').forEach(slide => {
+      slide.addEventListener('click', function() {
+        // Здесь можно добавить переход на страницу курса
+        console.log('Курс выбран:', this.querySelector('.course-title').textContent);
+      });
+    });
+
+    // Анимация появления элементов
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationDelay = '0.2s';
+        }
+      });
+    });
+
+    document.querySelectorAll('.swiper-slide').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
